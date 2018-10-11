@@ -26,6 +26,19 @@ namespace LINQExample
                 yield return selector(elem);
             }
         }
+
+        public static IEnumerable<T> MyDistinct<T>(this IEnumerable<T> collection)
+        {
+            var seen = new HashSet<T>();
+            foreach (var elem in collection)
+            {
+                if (seen.Contains(elem)==false)
+                {
+                    yield return elem;
+                    seen.Add(elem);
+                }
+            }
+        }
     }
 
     class Program
