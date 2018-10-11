@@ -1,8 +1,33 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace LINQExample
 {
+
+    public static class MyLinq
+    {
+        public static IEnumerable<T> MyWhere<T>(this IEnumerable<T> collection, Func<T, bool> cond)
+        {
+            foreach (var elem in collection)
+            {
+                if (cond(elem))
+                {
+                    yield return elem;
+                }
+            }
+        }
+
+        public static IEnumerable<R> MySelect<T, R>(this IEnumerable<T> collection, Func<T, R> selector)
+        {
+            foreach (var elem in collection)
+            {
+                yield return selector(elem);
+            }
+        }
+    }
+
     class Program
     {
         static void Main(string[] args)
@@ -41,14 +66,14 @@ namespace LINQExample
 
             // Select x's id and x's name from data where x's age is above 35
             var q = data
-                .Where(x => x.Age > 35)
-                .Select(x => new { Id = x.ID, x.Name })
-                .OrderBy(x=>x.Name)
+                .MyWhere(x => x.Age > 35)
+                .MySelect(x => new {Id = x.ID, x.Name})
+                .OrderBy(x => x.Name);
 
 
             foreach (var i in data
                 .Where(x=> x.Age>35)
-                .Select(x=> new { Id = x.ID, x.Name}));
+                .Select(x=> new { Id = x.ID, x.Name}))
             {
                 Console.WriteLine(i);
             }
